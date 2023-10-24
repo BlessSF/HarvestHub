@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="registerstyle.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <form id="MainForm">
+        <h1>Register User</h1>
+
+        <div class="input-box">
+          <div class="input-field">
+            <input type="email" placeholder="Email Address" id="EmailInput" />
+            <i class="bx bx-envelope"></i>
+          </div>
+          <div class="input-field">
+            <input type="password" placeholder="Password" id="PasswordInput" />
+            <i class="bx bx-lock"></i>
+          </div>
+          <div class="input-field">
+            <input type="text" placeholder="First Name" id="FnameInput" />
+            <i class="bx bx-edit-alt"></i>
+          </div>
+          <div class="input-field">
+            <input type="text" placeholder="Last Name" id="LnameInput" />
+            <i class="bx bx-edit-alt"></i>
+          </div>
+          <div class="input-field">
+            <input type="text" placeholder="Address" id="AddressInput" />
+            <i class="bx bx-home-alt-2"></i>
+          </div>
+          <div class="input-field">
+            <input
+              type="number"
+              placeholder="Contact Number"
+              id="ContactInput"
+            />
+            <i class="bx bx-home-alt-2"></i>
+          </div>
+        </div>
+
+        <label>
+          <input type="checkbox" />I hereby declare that the information
+          provided above is true and correct.</label
+        >
+        <button type="submit" class="btn">Register</button>
+        <button
+          type="button"
+          class="btn"
+          onclick="location.href = 'login-webpage.html';"
+        >
+          Back to Login
+        </button>
+      </form>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+      import {
+        getDatabase,
+        set,
+        ref,
+      } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+      } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-analytics.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyBgmn4GoLNud-NCwFZxyB49hhH0s6ucEWU",
+        authDomain: "harvesthub-loginreg.firebaseapp.com",
+        databaseURL: "https://harvesthub-loginreg-default-rtdb.firebaseio.com",
+        projectId: "harvesthub-loginreg",
+        storageBucket: "harvesthub-loginreg.appspot.com",
+        messagingSenderId: "55001985195",
+        appId: "1:55001985195:web:931bec92bd07eab86e87ee",
+        measurementId: "G-9XZM7WM5C2",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const db = getDatabase();
+      const auth = getAuth(app);
+
+      let EmailInput = document.getElementById("EmailInput");
+      let PasswordInput = document.getElementById("PasswordInput");
+      let FnameInput = document.getElementById("FnameInput");
+      let LnameInput = document.getElementById("LnameInput");
+      let AddressInput = document.getElementById("AddressInput");
+      let ContactInput = document.getElementById("ContactInput");
+      let MainForm = document.getElementById("MainForm");
+
+      let RegisterUser = (evt) => {
+        evt.preventDefault();
+
+        createUserWithEmailAndPassword(
+          auth,
+          EmailInput.value,
+          PasswordInput.value
+        )
+          .then((credentials) => {
+            set(ref(db, "UsersAuthList/" + credentials.user.uid), {
+              Firstname: FnameInput.value,
+              Lastname: LnameInput.value,
+              Address: AddressInput.value,
+              ContactInput: ContactInput.value,
+            });
+            console.log(credentials);
+            alert("Hey! Thanks for Registering!");
+          })
+          .catch((error) => {
+            alert(error.message);
+            console.log(error.code);
+            console.log(error.message);
+          });
+      };
+
+      MainForm.addEventListener("submit", RegisterUser);
+    </script>
+  </body>
+</html>
